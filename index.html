@@ -118,7 +118,7 @@ Oh 駆け抜けてく　Fire Monster
     // URLパラメータから "id" を取得してダウンロードボタンのリンクを生成
     const urlParams = new URLSearchParams(window.location.search);
     const serialId = urlParams.get('id');
-    const gasWebappUrl = "https://script.google.com/macros/s/AKfycbyoWHa2x6yu1ZtTD6uNZGsGW-YUvHE8w3A7aySmoEHalaX-82fTXSHwGwEsMW10zImYjw/exec"; // あなたのGASのURL
+    const gasWebappUrl = "https://script.google.com/macros/s/AKfycbyw2haAaSYgN4pi3hfLMfkjx_7C5_Uo1NbmqtJKxx94aObJDSn1myOS5XB-Ot3gd1H0tw/exec"; // あなたのGASのURL
 
     if (serialId) {
         document.getElementById('dl-link').href = gasWebappUrl + "?id=" + serialId;
