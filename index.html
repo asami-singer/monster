@@ -38,10 +38,20 @@
             border-radius: 30px;
             font-weight: bold;
             transition: opacity 0.3s;
+            box-sizing: border-box;
+            width: 100%;
+            font-size: 16px;
         }
-        .btn-download { background-color: #000; color: #fff; }
+        .btn-download { 
+            background-color: #000; 
+            color: #fff; 
+            border: none; 
+            cursor: pointer;
+            line-height: 1.2;
+        }
         .btn-linkcore { background-color: #00D4FF; color: #fff; }
-        .btn-sns { background-color: #E1306C; color: #fff; } /* SNS用（例:Instagram色） */
+        .btn-sns { background-color: #E1306C; color: #fff; }
+        
         .btn:hover { opacity: 0.8; }
 
         .lyrics-section {
@@ -72,13 +82,15 @@
 
     <h2>MONSTER / もりたかみつ</h2>
 
-    <a href="#" id="dl-link" class="btn btn-download">楽曲をダウンロードする</a>
-	<p id="remaining-count" style="font-size: 0.9em; color: #666;">
-	    残りダウンロード回数を確認中...
-	</p>
+    <!-- ここにあった注意書きの1行を削除しました -->
+    
+    <a href="javascript:void(0)" id="dl-link" class="btn btn-download">楽曲をダウンロードする</a>
+    
+    <p id="remaining-count" style="font-size: 0.9em; color: #666;">
+        残りダウンロード回数を確認中...
+    </p>
 
-    <a href="https://linkco.re/your-link" target="_blank" class="btn btn-linkcore">ストリーミングで聴く</a>
-
+    <a href="https://linkco.re/5Xg4Yxcn" target="_blank" class="btn btn-linkcore">ストリーミングで聴く</a>
     <a href="https://www.instagram.com/mori.taka.mitsu/" target="_blank" class="btn btn-sns">Official Instagram</a>
 
     <div class="lyrics-section">
@@ -96,7 +108,7 @@
 突然の雨に見舞われたときは
 虹を待つのさ　晴れるまで
 
-ホラ　飛び乗れあの船
+ホラ飛び乗れ あの船
 冒険を選んだ僕ら
 辿り着かないとしても求め Higher
 ホラ気付けばもう君は 
@@ -114,6 +126,7 @@ Oh 駆け抜けてく　Fire Monster
 ホラ気付けばもう僕ら 
 何にも負けない勇者
 燃やし尽くすまで見届けて
+
         </div>
     </div>
 </div>
@@ -123,7 +136,6 @@ Oh 駆け抜けてく　Fire Monster
         const urlParams = new URLSearchParams(window.location.search);
         const rawSerialId = urlParams.get('id');
         
-        // 現在設定されている MONSTER 用の GAS URL
         const gasWebappUrl = "https://script.google.com/macros/s/AKfycbyDlzWSC9ql9svgn4IBR-6pSFogdr-erSDJ6v6T6VjWiAyocKKzB_gnYsFfc9nOpu7Dxg/exec";
         
         const dlLink = document.getElementById('dl-link');
@@ -133,33 +145,31 @@ Oh 駆け抜けてく　Fire Monster
             const serialId = rawSerialId.trim();
             const encodedId = encodeURIComponent(serialId);
 
-            // 1. ダウンロード用リンクの設定
-            dlLink.href = gasWebappUrl + "?id=" + encodedId;
-
-            // 2. 残り回数をGASへ問い合わせ (mode=check)
-            const checkUrl = gasWebappUrl + "?mode=check&id=" + encodedId;
-            
-            fetch(checkUrl)
+            fetch(gasWebappUrl + "?mode=check&id=" + encodedId)
                 .then(response => response.text())
                 .then(count => {
-                    // 数字が返ってきたら表示を更新
                     countDisplay.innerText = "ダウンロード残り回数：" + count + "回";
-                    
-                    // 0回以下ならボタンを無効化
                     if (parseInt(count) <= 0) {
-                        dlLink.style.pointerEvents = "none";
-                        dlLink.style.backgroundColor = "#ccc";
-                        dlLink.innerText = "ダウンロード上限に達しました";
+                        setDisabled();
+                    } else {
+                        dlLink.href = gasWebappUrl + "?id=" + encodedId;
                     }
                 })
                 .catch(error => {
-                    console.error("Error:", error);
-                    countDisplay.innerText = "回数の取得に失敗しました";
+                    countDisplay.innerText = "状況の取得に失敗しました";
                 });
+
         } else {
             dlLink.style.display = 'none';
             countDisplay.style.display = 'none';
-            alert("シリアルIDが見つかりません。タグをもう一度読み取ってください。");
+            alert("シリアルIDが見つかりません。");
+        }
+
+        function setDisabled() {
+            dlLink.style.pointerEvents = "none";
+            dlLink.style.backgroundColor = "#ccc";
+            dlLink.innerText = "ダウンロード上限に達しました";
+            dlLink.href = "javascript:void(0)";
         }
     };
 </script>
